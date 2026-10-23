@@ -1,0 +1,74 @@
+name: Build MOTE
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # The sound engine on its own (no plugin code): 200+ automatic checks. A failure here stops you shipping a broken sound.
+  engine-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run the engine self-test
+        run: |
+          cmake -S . -B build-tests -DCMAKE_BUILD_TYPE=Release -DMOTE_BUILD_PLUGIN=OFF
+          cmake --build build-tests --config Release -j 4
+          ./build-tests/mote_selftest
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DMOTE_BUILD_TOOLS=OFF
+      - name: Build (VST3 + Standalone)
+        run: cmake --build build --config Release --parallel 4
+      - name: Put the download together
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/MOTE-Windows | Out-Null
+          Copy-Item -Recurse -Force build/MOTE_artefacts/Release/VST3/MOTE.vst3 dist/MOTE-Windows/MOTE.vst3
+          Copy-Item -Force build/MOTE_artefacts/Release/Standalone/MOTE.exe dist/MOTE-Windows/MOTE-Standalone.exe
+          Copy-Item -Force packaging/INSTALL.bat dist/MOTE-Windows/INSTALL.bat
+          Copy-Item -Force packaging/READ-ME-FIRST.txt dist/MOTE-Windows/READ-ME-FIRST.txt
+          Get-ChildItem -Recurse dist | Select-Object FullName, Length
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MOTE-Windows
+          path: dist/MOTE-Windows
+
+  # Intel Mac (2017 MacBook Pro, Ventura or newer). Built on GitHub's Apple-silicon machines as a 64-bit Intel build.
+  mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: |
+          cmake -S . -B build -G Xcode \
+            -DCMAKE_OSX_ARCHITECTURES=x86_64 \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15 \
+            -DMOTE_BUILD_TOOLS=OFF
+      - name: Build (VST3 + AU + Standalone)
+        run: cmake --build build --config Release --parallel 4
+      - name: Put the download together
+        run: |
+          mkdir -p dist/MOTE-Mac
+          cp -R build/MOTE_artefacts/Release/VST3/MOTE.vst3 dist/MOTE-Mac/
+          cp -R build/MOTE_artefacts/Release/AU/MOTE.component dist/MOTE-Mac/
+          cp -R build/MOTE_artefacts/Release/Standalone/MOTE.app dist/MOTE-Mac/
+          # "ad-hoc" signature: not a Developer ID, but macOS needs something on the file or it refuses to load it at all
+          for f in dist/MOTE-Mac/MOTE.vst3 dist/MOTE-Mac/MOTE.component dist/MOTE-Mac/MOTE.app; do
+            codesign --force --deep --sign - "$f"
+          done
+          cp packaging/INSTALL-Mac.command dist/MOTE-Mac/INSTALL.command
+          chmod +x dist/MOTE-Mac/INSTALL.command
+          cp packaging/READ-ME-FIRST-Mac.txt dist/MOTE-Mac/READ-ME-FIRST.txt
+          file dist/MOTE-Mac/MOTE.vst3/Contents/MacOS/MOTE
+          # zip so the executable bits survive the download
+          cd dist && ditto -c -k --sequesterRsrc --keepParent MOTE-Mac MOTE-Mac.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MOTE-Mac
+          path: dist/MOTE-Mac.zip
