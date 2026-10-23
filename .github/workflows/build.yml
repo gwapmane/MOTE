@@ -21,8 +21,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      # GitHub's Windows machines now ship Visual Studio 2026 instead of 2022: try the newer one first, then the older one
       - name: Configure
-        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DMOTE_BUILD_TOOLS=OFF
+        shell: bash
+        run: |
+          cmake -S . -B build -G "Visual Studio 18 2026" -A x64 -DMOTE_BUILD_TOOLS=OFF \
+            || (rm -rf build && cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DMOTE_BUILD_TOOLS=OFF)
       - name: Build (VST3 + Standalone)
         run: cmake --build build --config Release --parallel 4
       - name: Put the download together
