@@ -1,0 +1,47 @@
+MOTE  v0.1  -  Intel Mac: VST3 + AU + Standalone      (a granular instrument: drop any sound in, play it)
+
+QUICK START (FL Studio on your Mac)
+1. Unzip the download.
+2. Double-click INSTALL.command.  If macOS says it can't be opened: right-click it > Open > Open.
+   (It copies MOTE into  ~/Library/Audio/Plug-Ins/VST3  and  .../Components  and clears the "downloaded" mark.)
+3. FL Studio > Options > Manage plugins > Find installed plugins.
+4. MOTE is an INSTRUMENT: look under Installed > Generators.
+
+To just try it, right-click MOTE.app > Open (the first time), and click the keys on the screen.
+
+If macOS still refuses to load it: System Settings > Privacy & Security > scroll down > "Open Anyway".
+
+HOW YOU USE IT
+1. DRAG ANY SOUND onto the wide screen (wav, aiff, flac, ogg, mp3 - a guitar riff, a vocal, a drum loop, anything).
+   Or click the screen and choose a file. Up to 40 seconds is kept, and it is saved inside your FL project.
+2. Play notes. The sound is cut into tiny pieces ("grains") and replayed as an instrument.
+3. Drag across the screen to move POSITION - that is where in your sound the grains are taken from.
+   The soft blobs you see are the grains being fired as you play.
+Seven built-in sounds are in the SAMPLE knob if you just want to hear it work (the last position is YOUR sample).
+
+THE BIG KNOBS (top row)
+ POSITION  where in the sound the grains come from      SCATTER  how far from that spot they wander
+ DENSITY   how many grains per second                   SIZE     how long each grain is (small = grainy, big = smooth)
+ PITCH     whole sound up / down in steps               JITTER   random pitch wobble per grain
+ SPREAD    stereo width                                 SPEED    how fast the position travels (TRAVEL / BOUNCE)
+ MAGNET    pulls grains toward the hits in your sound (drums, plucks)
+THE SIX MODULES (the levers with a small knob): switch on what you want
+ MORPH  blend in a second sound (BLEND; drop the second sound on the right half of the screen)
+ COHERE locks the grains to the note you play, so it sounds like a clean synth (LOCK)
+ WALK   steps through slices of your sound in time with your DAW (PATTERN)
+ REPEAT stutters what you play, beat-repeat style (LENGTH)
+ FILTER sweeps tone (CUTOFF)                       COMP squashes it so it sounds thick (SQUASH)
+THE SMALL KNOBS (bottom): ATTACK DECAY SUSTAIN RELEASE (how a note starts and ends), KEY + SCALE (make grains land on
+ notes that sound good together - pick Pentatonic and you can't hit a wrong note), VOICES, LEVEL, DELAY, REVERB.
+PLAY lever: HOLD (stays at POSITION), TRAVEL (slides along your sound), BOUNCE (slides back and forth).
+A / LIVE / B lever: two memory slots for quick sound changes.     Left footswitch = on/off.  Right footswitch = LATCH
+ (keeps the notes playing; hold it for momentary).
+
+IN THE PLUGIN
+- Bar on top: < preset name > (click the name: 64 factory presets in groups, plus My Presets), Save, S/M/L window size,
+  the up-arrow hides the bar so only the pedal shows, gear = settings.
+- Settings > LOOK: body colour, lights colour, texture, your own picture, your own video / GIF / picture in the window.
+- Settings > SOUND: load a sample (and a second one for MORPH), grain shape, reverse, filter type, walk / repeat details,
+  delay + reverb details, two Ramps (knobs move by themselves) and two Macros (one knob moves several), tempo, MIDI learn.
+- MIDI knobs: right-click any knob on the pedal, then move a knob on your controller.
+- Piano keys on the screen play it too (click and hold).
